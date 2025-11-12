@@ -1,0 +1,404 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const publicationEntries = await getCollection('publications');
+
+const sortedPublications = [...publicationEntries].sort((a, b) => {
+  if (b.data.year !== a.data.year) return b.data.year - a.data.year;
+  if (a.data.order !== b.data.order) return a.data.order - b.data.order;
+  return a.data.title.localeCompare(b.data.title);
+});
+
+const groupedMap = new Map<number, typeof publicationEntries>();
+
+for (const entry of sortedPublications) {
+    const group = groupedMap.get(entry.data.year);
+    if (group) {
+      group.push(entry);
+    } else {
+      groupedMap.set(entry.data.year, [entry]);
+    }
+}
+
+const publications = Array.from(groupedMap.entries()).map(([year, papers]) => ({
+  year,
+  papers,
+}));
+---
+
+<BaseLayout title="Publications">
+  <Header slot="header" />
+  
+  <div class="page-header">
+    <div class="page-header-content">
+      <h1>Publications</h1>
+      <p class="page-subtitle">Our research contributions</p>
+    </div>
+  </div>
+
+  <section class="section publications-section">
+    <div class="container">
+      <p class="note">* = (co-)corresponding author, ** = equal contributions</p>
+      {publications.map(({ year, papers }) => (
+        <div class="year-section">
+          <h2 class="year-title">{year}</h2>
+          <div class="papers-list">
+            {papers.map(paper => (
+              <article class="paper-card">
+                {paper.data.venueShort && (
+                  <div class="paper-meta">
+                    <span class="venue-badge" data-type={paper.data.type}>{paper.data.venueShort}</span>
+                    <span class="pub-type">{paper.data.type}</span>
+                  </div>
+                )}
+                <h3 class="paper-title">{paper.data.title}</h3>
+                <p class="paper-authors">{paper.data.authors}</p>
+                <p class="paper-venue">{paper.data.venueFull}</p>
+                <div class="paper-links">
+                  {paper.data.doi ? (
+                    <a href={paper.data.doi} class="paper-link-badge doi-badge" target="_blank" rel="noopener">
+                      DOI
+                    </a>
+                  ) : (
+                    <span class="paper-link-badge doi-badge disabled">
+                      DOI
+                    </span>
+                  )}
+                  {paper.data.code && (
+                    <a href={paper.data.code} class="paper-link-badge code-badge" target="_blank" rel="noopener">
+                      💻 Code
+                    </a>
+                  )}
+                  {paper.data.dataset && (
+                    <span class="dataset-badge">📊 Dataset</span>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .page-header {
+    min-height: 30vh;
+    background-image: url('/ewha.gif');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    color: white;
+    position: relative;
+    padding: 2.5rem 0;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.08) 0px,
+        transparent 1px,
+        transparent 40px,
+        rgba(255, 255, 255, 0.08) 41px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.08) 0px,
+        transparent 1px,
+        transparent 40px,
+        rgba(255, 255, 255, 0.08) 41px
+      );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .page-header-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 60px;
+    text-align: left;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+    font-weight: 300;
+    opacity: 0.95;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    margin: 0;
+  }
+
+  .publications-section {
+    padding: 4rem 0;
+    background: white;
+  }
+
+  .note {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 2.5rem;
+    margin-left: 0;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 70, 42, 0.03);
+    border-left: 3px solid #00462A;
+    border-radius: 4px;
+  }
+
+  .year-section {
+    margin-bottom: 3.5rem;
+    position: relative;
+    display: grid;
+    grid-template-columns: 80px 2px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .year-section::before {
+    content: '';
+    position: absolute;
+    left: calc(80px + 1.5rem);
+    top: 0;
+    bottom: -3.5rem;
+    width: 2px;
+    background: rgba(0, 70, 42, 0.15);
+    z-index: 0;
+  }
+
+  .year-section:last-child::before {
+    bottom: 0;
+  }
+
+  .year-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .year-title {
+    font-size: 1.5rem;
+    color: #00462A;
+    font-weight: 700;
+    position: sticky;
+    top: 100px;
+    z-index: 1;
+    grid-column: 1;
+  }
+
+  .papers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    grid-column: 3;
+  }
+
+  .paper-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .paper-card:hover {
+    background: rgba(0, 70, 42, 0.02);
+  }
+
+  .paper-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .venue-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #00462A;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .venue-badge[data-type="Journal"] {
+    background: #00462A;
+  }
+
+  .venue-badge[data-type="Conference"] {
+    background: #2d5f4f;
+  }
+
+  .pub-type {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 500;
+  }
+
+  .paper-title {
+    font-size: 1.1rem;
+    color: #1a2a20;
+    margin-bottom: 0.6rem;
+    line-height: 1.5;
+    font-weight: 600;
+  }
+
+  .paper-authors {
+    color: #555;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .paper-venue {
+    color: #999;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+
+  .paper-links {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .paper-link-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .doi-badge {
+    background: white;
+    color: #00462A;
+    border: 1px solid #00462A;
+  }
+
+  .doi-badge:not(.disabled):hover {
+    background: rgba(0, 70, 42, 0.05);
+    transform: translateY(-1px);
+  }
+
+  .doi-badge.disabled {
+    background: #f5f5f5;
+    color: #ccc;
+    border: 1px solid #e0e0e0;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .code-badge {
+    background: white;
+    color: #2d5f4f;
+    border: 1px solid #2d5f4f;
+  }
+
+  .code-badge:hover {
+    background: rgba(45, 95, 79, 0.05);
+    transform: translateY(-1px);
+  }
+
+  .dataset-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.7rem;
+    background: rgba(0, 70, 42, 0.1);
+    color: #00462A;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      background-attachment: scroll;
+      background-position: center 20%;
+      background-size: auto;
+    }
+
+    .page-header-content {
+      padding: 0 20px;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .page-header p {
+      font-size: 1rem;
+    }
+
+    .publications-section {
+      padding: 3rem 0;
+    }
+
+    .note {
+      font-size: 0.8rem;
+      padding: 0.6rem 0.8rem;
+    }
+
+    .year-section {
+      margin-bottom: 2.5rem;
+      grid-template-columns: 70px 2px 1fr;
+      gap: 1rem;
+    }
+
+    .year-section::before {
+      left: calc(70px + 1rem);
+    }
+
+    .year-title {
+      font-size: 1.2rem;
+      top: 80px;
+    }
+
+    .paper-card {
+      padding: 1.25rem;
+    }
+
+    .paper-title {
+      font-size: 0.95rem;
+    }
+
+    .paper-authors {
+      font-size: 0.85rem;
+    }
+
+    .paper-venue {
+      font-size: 0.8rem;
+    }
+
+    .dataset-badge {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.6rem;
+    }
+  }
+</style>

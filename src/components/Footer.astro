@@ -1,0 +1,125 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer-content">
+    <div class="footer-left">
+      <h3>HAI Lab.</h3>
+      <p class="footer-lab-full">Human-centered Artificial Intelligence Laboratory (HAI Lab.)</p>
+      <p class="footer-department">Dept. of Artificial Intelligence, Ewha Womans University</p>
+    </div>
+    
+    <div class="footer-right">
+      <p class="footer-address">Room 311, Jinseonmi-gwan</p>
+      <p class="footer-address">52, Ewhayeodae-gil, Seodaemun-gu, Seoul 03760</p>
+      <p class="footer-tel">TEL: +82-2-3277-5947</p>
+      <p class="footer-copyright">Copyright © {currentYear} EWHA HAI Lab.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: #1a2a20;
+    color: #e0e0e0;
+    margin-top: auto;
+    padding: 3rem 0 2.5rem;
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-left h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .footer-lab-full {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: #b0b0b0;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .footer-department {
+    font-size: 0.65rem;
+    font-weight: 300;
+    color: #909090;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .footer-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    text-align: right;
+  }
+
+  .footer-address {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #b0b0b0;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .footer-tel {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #b0b0b0;
+    margin: 0.5rem 0 1rem;
+    line-height: 1.6;
+  }
+
+  .footer-copyright {
+    font-size: 0.65rem;
+    font-weight: 300;
+    color: #707070;
+    margin: 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  @media (max-width: 768px) {
+    .footer {
+      padding: 2.5rem 0 2rem;
+    }
+
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding: 0 20px;
+    }
+
+    .footer-left {
+      text-align: left;
+    }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    .footer-copyright {
+      text-align: right;
+    }
+  }
+</style>

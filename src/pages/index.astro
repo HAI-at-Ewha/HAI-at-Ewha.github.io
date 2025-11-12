@@ -1,0 +1,820 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const newsEntries = await getCollection('news');
+
+const sortedNews = [...newsEntries].sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const featuredNews = sortedNews.find((item) => item.data.featured);
+const regularNews = sortedNews.filter((item) => !item.data.featured);
+
+type NewsEntry = (typeof newsEntries)[number];
+const newsByYear = new Map<number, NewsEntry[]>();
+
+for (const item of regularNews) {
+  const year = item.data.date.getUTCFullYear();
+  const bucket = newsByYear.get(year);
+
+  if (bucket) {
+    bucket.push(item);
+    continue;
+  }
+
+  newsByYear.set(year, [item]);
+}
+
+const years = Array.from(newsByYear.keys()).sort((a, b) => b - a);
+const [primaryYear, ...otherYears] = years;
+const primaryNews = primaryYear ? newsByYear.get(primaryYear) ?? [] : [];
+const otherNews = otherYears.map((year) => ({
+  year,
+  items: newsByYear.get(year) ?? [],
+}));
+
+const hasMoreNews = otherNews.length > 0;
+const hasNews = regularNews.length > 0;
+
+const monthFormatter = new Intl.DateTimeFormat('en', { month: 'short' });
+const getMonthLabel = (date: Date) => monthFormatter.format(date);
+
+const noticeText =
+  featuredNews?.data.title ??
+  "We're hiring a post-doc who will conduct a bias & fairness study for LLMs. Please do not hesitate to contact to PI!";
+---
+
+<BaseLayout title="Home">
+  <Header slot="header" />
+  
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-overlay-bottom"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-badges">
+      <div class="hero-badge">
+        <span class="badge-text">Human-centered AI</span>
+      </div>
+      <div class="hero-badge">
+        <span class="badge-text">AI Alignment</span>
+      </div>
+      <div class="hero-badge">
+        <span class="badge-text">Mechanistic Interpretability</span>
+      </div>
+      <div class="hero-badge">
+        <span class="badge-text">Bias & Fairness</span>
+      </div>
+      <div class="hero-badge">
+        <span class="badge-text">Est. 2025 | Ewha Womans University</span>
+      </div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-title">
+        <span class="lab-name">HAI Lab.</span>
+      </div>
+      <p class="subtitle"><strong>H</strong>uman-centered <strong>A</strong>rtificial <strong>I</strong>ntelligence <strong>Lab</strong>oratory</p>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span class="scroll-text">Scroll</span>
+    </div>
+  </section>
+
+  <!-- Welcome Section -->
+  <section class="section welcome">
+    <div class="container">
+      <div class="welcome-content">
+        <p class="welcome-text">
+          Welcome to the <strong>Human-centered Artificial Intelligence Laboratory (HAI Lab.)</strong> at Ewha!
+        </p>
+        <p class="welcome-description">
+          HAI Lab is eager to develop AI techniques, systems, and applications for human well-being and improving human society.
+        </p>
+        <div class="notice-box">
+          <span class="notice-badge">NOTICE</span>
+          <p class="notice-text">{noticeText}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Research Areas Section -->
+  <section class="section research-areas">
+    <div class="research-grid-bg"></div>
+    <div class="container">
+      <p class="section-title">Research Areas</p>
+      <p class="section-subtitle">The main research topics of our group include, <strong>but not limited to:</strong></p>
+      <div class="research-grid">
+        <div class="research-card">
+          <div class="card-number">01</div>
+          <div class="card-icon">🌻</div>
+          <h3>AI in Mental Health</h3>
+          <p>Co-pilot systems for mental health experts, detection and counseling systems for psychological well-being</p>
+        </div>
+        <div class="research-card">
+          <div class="card-number">02</div>
+          <div class="card-icon">📰</div>
+          <h3>AI in Journalism</h3>
+          <p>DeepFake detection, political bias detection and mitigation for trustworthy media</p>
+        </div>
+        <div class="research-card">
+          <div class="card-number">03</div>
+          <div class="card-icon">🔬</div>
+          <h3>Computational Social Science</h3>
+          <p>Data mining on diverse areas including networking, security, epidemiology, and medical domains</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News Section -->
+  <section class="section news">
+    <div class="container">
+      <div class="news-layout">
+        <!-- Left Column: Title & View All -->
+        <div class="news-header">
+          <h2 class="news-title">News</h2>
+          {hasMoreNews && (
+            <button
+              class="view-all-btn"
+              type="button"
+              aria-expanded="false"
+              aria-controls="news-archive"
+            >
+              View All →
+            </button>
+          )}
+        </div>
+
+        <!-- Right Column: News Items -->
+        <div class="news-content">
+          {hasNews ? (
+            <>
+              {primaryYear && (
+                <div class="news-year-section">
+                  <div class="news-year">{primaryYear}</div>
+                  <div class="news-list">
+                    {primaryNews.map((item, index) => (
+                      <>
+                        <article class="news-item">
+                          <span class="news-date">{getMonthLabel(item.data.date)}</span>
+                          <p class="news-text">{item.data.title}</p>
+                        </article>
+                        {index < primaryNews.length - 1 && <div class="news-divider"></div>}
+                      </>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {hasMoreNews && (
+                <div class="news-hidden" id="news-archive" aria-hidden="true">
+                  {otherNews.map(({ year, items }) => (
+                    <div class="news-year-section">
+                      <div class="news-year">{year}</div>
+                      <div class="news-list">
+                        {items.map((item, index) => (
+                          <>
+                            <article class="news-item">
+                              <span class="news-date">{getMonthLabel(item.data.date)}</span>
+                              <p class="news-text">{item.data.title}</p>
+                            </article>
+                            {index < items.length - 1 && <div class="news-divider"></div>}
+                          </>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <p class="news-empty">News will be updated soon.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const viewAllBtn = document.querySelector('.view-all-btn');
+    const newsHidden = document.querySelector('#news-archive');
+
+    if (!(viewAllBtn instanceof HTMLButtonElement) || !(newsHidden instanceof HTMLElement)) {
+      return;
+    }
+
+    const toggleNews = () => {
+      const expanded = newsHidden.classList.toggle('expanded');
+      viewAllBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      newsHidden.setAttribute('aria-hidden', expanded ? 'false' : 'true');
+      viewAllBtn.textContent = expanded ? 'View Less ↑' : 'View All →';
+    };
+
+    viewAllBtn.addEventListener('click', toggleNews);
+  });
+</script>
+
+<style>
+  .hero {
+    min-height: 100vh;
+    background-image: url('/ewha.gif');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    color: white;
+    position: relative;
+    padding: 4rem 0;
+    padding-bottom: 6rem;
+  }
+
+  .hero-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.25) 0px,
+        transparent 1px,
+        transparent 20px,
+        rgba(255, 255, 255, 0.25) 21px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.25) 0px,
+        transparent 1px,
+        transparent 20px,
+        rgba(255, 255, 255, 0.25) 21px
+      );
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0.85) 95%,
+      rgba(0, 0, 0, 1) 100%
+    );
+    z-index: 2;
+  }
+
+  .hero-badges {
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 60px;
+  }
+
+  .hero-badge {
+    padding: 0.4rem 0.9rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    animation: fadeInRight 1s ease-out backwards;
+    transition: all 0.3s ease;
+  }
+
+  .hero-badge:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(3px);
+  }
+
+  .hero-badge:nth-child(1) { animation-delay: 0.3s; }
+  .hero-badge:nth-child(2) { animation-delay: 0.4s; }
+  .hero-badge:nth-child(3) { animation-delay: 0.5s; }
+  .hero-badge:nth-child(4) { animation-delay: 0.6s; }
+  .hero-badge:nth-child(5) { animation-delay: 0.7s; }
+
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .badge-text {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    padding: 0 60px;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeInUp 1.2s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+    animation: fadeInUp 1.2s ease-out 0.2s backwards;
+  }
+
+  .lab-name {
+    font-size: 4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    line-height: 1;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    font-weight: 200;
+    opacity: 0.85;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    animation: fadeInUp 1.2s ease-out 0.4s backwards;
+  }
+
+  .subtitle strong {
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    right: 60px;
+    bottom: 40px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    animation: fadeInUp 1.2s ease-out 0.6s backwards;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: scrollLineMove 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLineMove {
+    0%, 100% {
+      transform: translateY(-10px);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translateY(10px);
+      opacity: 1;
+    }
+  }
+
+  .scroll-text {
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .section {
+    padding: 3rem 0;
+  }
+
+  .section-title {
+    text-align: left;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: #2c3e50;
+  }
+
+  .section-subtitle {
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: #666;
+    margin-bottom: 1.25rem;
+    font-style: italic;
+  }
+
+  .section-subtitle strong {
+    font-weight: 500;
+    color: #00462A;
+    font-style: normal;
+  }
+
+  /* Welcome Section */
+  .welcome {
+    background: white;
+    padding: 4rem 0 3rem;
+  }
+
+  .welcome-content {
+    max-width: 100%;
+  }
+
+  .welcome-text {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: #2c3e50;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .welcome-text strong {
+    font-weight: 600;
+    color: #00462A;
+  }
+
+  .welcome-description {
+    font-size: 0.75rem;
+    line-height: 1.7;
+    color: #555;
+    font-weight: 300;
+    text-align: left;
+    margin-bottom: 2rem;
+  }
+
+  .notice-box {
+    background: linear-gradient(135deg, rgba(0, 70, 42, 0.05) 0%, rgba(0, 70, 42, 0.02) 100%);
+    border-left: 3px solid #00462A;
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .notice-badge {
+    background: #00462A;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .notice-text {
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: #2c3e50;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  /* Research Areas Section */
+  .research-areas {
+    background: #f8f9fa;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .research-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 70, 42, 0.03) 0px,
+        transparent 1px,
+        transparent 40px,
+        rgba(0, 70, 42, 0.03) 41px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(0, 70, 42, 0.03) 0px,
+        transparent 1px,
+        transparent 40px,
+        rgba(0, 70, 42, 0.03) 41px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .research-areas .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .research-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .research-card {
+    background: white;
+    padding: 1.5rem 1.25rem;
+    border-radius: 8px;
+    border-left: 3px solid #00462A;
+    text-align: left;
+    position: relative;
+  }
+
+  .card-number {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    font-weight: 200;
+    color: rgba(0, 70, 42, 0.08);
+    line-height: 1;
+  }
+
+  .card-icon {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  .research-card h3 {
+    color: #00462A;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .research-card p {
+    color: #555;
+    line-height: 1.6;
+    font-size: 0.75rem;
+    font-weight: 300;
+  }
+
+  /* News Section */
+  .news {
+    background: white;
+  }
+
+  .news-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .news-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+
+  .news-title {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+  }
+
+  .view-all-btn {
+    background: none;
+    border: none;
+    color: #00462A;
+    font-size: 0.85rem;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.3s;
+    font-family: inherit;
+  }
+
+  .view-all-btn:hover {
+    opacity: 0.7;
+  }
+
+  .news-content {
+    position: relative;
+  }
+
+  .news-year-section {
+    position: relative;
+    margin-bottom: 3rem;
+  }
+
+  .news-year-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .news-year {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #999;
+    letter-spacing: 0.05em;
+  }
+
+  .news-list {
+    padding-top: 2rem;
+  }
+
+  .news-item {
+    padding: 0.6rem 0;
+  }
+
+  .news-date {
+    display: block;
+    color: #00462A;
+    font-weight: 400;
+    font-size: 0.7rem;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.02em;
+  }
+
+  .news-text {
+    color: #555;
+    line-height: 1.5;
+    font-size: 0.85rem;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .news-empty {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+
+  .news-text strong {
+    font-weight: 500;
+    color: #00462A;
+  }
+
+  .news-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 70, 42, 0.2) 0%,
+      rgba(0, 70, 42, 0.05) 100%
+    );
+    margin: 0.6rem 0;
+  }
+
+  .news-hidden {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+  }
+
+  .news-hidden.expanded {
+    max-height: 5000px;
+    transition: max-height 1s ease-in;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      min-height: 100vh;
+      background-attachment: scroll;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding-bottom: calc(7rem + 60px);
+    }
+
+    .hero-badges {
+      top: 100px;
+      padding: 0 20px;
+    }
+
+    .hero-content {
+      text-align: left;
+      padding: 0 20px;
+    }
+
+    .hero-title {
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .lab-name {
+      font-size: 3.5rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+    }
+
+    .scroll-indicator {
+      right: 20px;
+      bottom: auto;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .scroll-line {
+      height: 35px;
+    }
+
+    .scroll-text {
+      font-size: 0.75rem;
+    }
+
+    .section {
+      padding: 2.5rem 0;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .research-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .card-number {
+      font-size: 1.5rem;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    .news-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .news-header {
+      position: static;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .news-title {
+      font-size: 1.4rem;
+      margin-bottom: 0;
+    }
+
+    .view-all-btn {
+      font-size: 0.75rem;
+    }
+
+    .news-year {
+      position: static;
+      margin-bottom: 1rem;
+    }
+
+    .news-list {
+      padding-top: 0;
+    }
+  }
+</style>

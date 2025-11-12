@@ -1,0 +1,437 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="Join Us">
+  <Header slot="header" />
+  
+  <div class="page-header">
+    <div class="page-header-content">
+      <h1>Join Us</h1>
+      <p class="page-subtitle">Become part of our team</p>
+    </div>
+  </div>
+
+  <!-- Recruiting Message -->
+  <section class="section recruiting-section">
+    <div class="container">
+      <div class="recruiting-content">
+        <h2 class="section-title">Become a Researcher in HAI Lab @Ewha</h2>
+        <p class="intro-text">
+          We are looking for highly-motivated graduate students and undergraduate interns. 
+          If you're interested in, please email us with your CV.
+        </p>
+        <div class="contact-simple">
+          <span class="contact-link clickable-email" data-email="djchoi@ewha.ac.kr">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            djchoi@ewha.ac.kr
+          </span>
+          <span class="contact-divider">·</span>
+          <span class="contact-text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            02-3277-5947
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section class="section location-section">
+    <div class="location-overlay"></div>
+    <div class="container">
+      <h2 class="section-title">Location</h2>
+      <div class="location-grid">
+        <div class="location-card">
+          <div class="location-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <h3>Office</h3>
+          <div class="location-address">
+            <p>
+              서울 서대문구 이화여대길 52<br>
+              이화여자대학교 진선미관 311호
+            </p>
+            <p class="english-address">
+              Jinseonmi-Gwan, Room 311<br>
+              52, Ewhayeodae-gil, Seodaemun-gu, Seoul [03760]
+            </p>
+          </div>
+        </div>
+        <div class="location-card">
+          <div class="location-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <h3>Lab</h3>
+          <div class="location-address">
+            <p>
+              서울 서대문구 이화여대길 52<br>
+              이화여자대학교 캠퍼스복합단지(ECC) B220호
+            </p>
+            <p class="english-address">
+              Ewha Campus Complex, Room B220<br>
+              52, Ewhayeodae-gil, Seodaemun-gu, Seoul [03760]
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const emailElements = document.querySelectorAll('.clickable-email');
+    
+    emailElements.forEach(element => {
+      element.addEventListener('click', async () => {
+        const email = element.getAttribute('data-email');
+        
+        if (!email) return;
+        
+        try {
+          await navigator.clipboard.writeText(email);
+          
+          // Visual feedback
+          const originalHTML = element.innerHTML;
+          element.classList.add('email-copied');
+          element.textContent = 'Copied!';
+          
+          setTimeout(() => {
+            element.classList.remove('email-copied');
+            element.innerHTML = originalHTML;
+          }, 1500);
+        } catch (err) {
+          console.error('Failed to copy email:', err);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .page-header {
+    min-height: 30vh;
+    background-image: url('/ewha.gif');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    color: white;
+    position: relative;
+    padding: 2.5rem 0;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.08) 0px,
+        transparent 1px,
+        transparent 40px,
+        rgba(255, 255, 255, 0.08) 41px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.08) 0px,
+        transparent 1px,
+        transparent 40px,
+        rgba(255, 255, 255, 0.08) 41px
+      );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .page-header-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 60px;
+    text-align: left;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+    font-weight: 300;
+    opacity: 0.95;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    margin: 0;
+  }
+
+  .section {
+    padding: 2rem 0;
+  }
+
+  .section-title {
+    text-align: left;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #1a2a20;
+    font-weight: 700;
+  }
+
+  /* Recruiting Section */
+  .recruiting-section {
+    background: white;
+  }
+
+  .recruiting-content {
+    position: relative;
+  }
+
+  .intro-text {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.7;
+    margin: 0 0 1.2rem 0;
+  }
+
+  .contact-simple {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid #e8e9ea;
+    margin-top: 1.2rem;
+  }
+
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #00462A;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .contact-link:hover {
+    color: #006837;
+    transform: translateX(2px);
+  }
+
+  .contact-link svg {
+    flex-shrink: 0;
+  }
+
+  .clickable-email {
+    cursor: pointer;
+  }
+
+  .email-copied {
+    color: #006837 !important;
+  }
+
+  .contact-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.85rem;
+  }
+
+  .contact-text svg {
+    flex-shrink: 0;
+  }
+
+  .contact-divider {
+    color: #ddd;
+    font-size: 1rem;
+  }
+
+  /* Location Section */
+  .location-section {
+    background: #f8f9fa;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .location-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 70, 42, 0.03) 0px,
+        transparent 1px,
+        transparent 40px,
+        rgba(0, 70, 42, 0.03) 41px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(0, 70, 42, 0.03) 0px,
+        transparent 1px,
+        transparent 40px,
+        rgba(0, 70, 42, 0.03) 41px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .location-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .location-card {
+    background: white;
+    padding: 1.3rem;
+    border-radius: 8px;
+    border: 1px solid #e8e9ea;
+    transition: all 0.3s ease;
+  }
+
+  .location-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 70, 42, 0.06);
+    border-color: rgba(0, 70, 42, 0.12);
+  }
+
+  .location-icon {
+    margin-bottom: 0.6rem;
+    color: #00462A;
+  }
+
+  .location-icon svg {
+    display: block;
+  }
+
+  .location-card h3 {
+    font-size: 1rem;
+    color: #1a2a20;
+    margin: 0 0 0.7rem 0;
+    font-weight: 700;
+  }
+
+  .location-address p {
+    font-size: 0.8rem;
+    color: #555;
+    line-height: 1.6;
+    margin: 0.3rem 0;
+  }
+
+  .english-address {
+    color: #888;
+    font-size: 0.72rem !important;
+    font-style: italic;
+    margin-top: 0.7rem !important;
+    padding-top: 0.7rem;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 968px) {
+    .location-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      background-attachment: scroll;
+      background-position: center 20%;
+      background-size: auto;
+    }
+
+    .page-header-content {
+      padding: 0 20px;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .page-subtitle {
+      font-size: 0.8rem;
+    }
+
+    .section {
+      padding: 2rem 0;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro-text {
+      font-size: 0.85rem;
+    }
+
+    .location-grid {
+      gap: 1rem;
+    }
+
+    .location-card {
+      padding: 1.2rem;
+    }
+
+    .location-card h3 {
+      font-size: 1rem;
+    }
+
+    .location-address p {
+      font-size: 0.8rem;
+    }
+
+    .english-address {
+      font-size: 0.7rem !important;
+    }
+
+    .contact-simple {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.8rem 0;
+    }
+
+    .contact-link,
+    .contact-text {
+      font-size: 0.8rem;
+    }
+
+    .contact-divider {
+      display: none;
+    }
+  }
+
+</style>
