@@ -1,6 +1,6 @@
 ---
 title: "Political Bias Prediction Models Focus on Source Cues, Not Semantics"
-authors: "Selin Chun, **Daejin Choi**&ast;, and Taekyoung Kwon"
+authors: "Selin Chun, __Daejin Choi__*, and Taekyoung Kwon*"
 year: 2025
 venueShort: "AAAI"
 venueFull: "The 39th Annual AAAI Conference on Artificial Intelligence (AAAI), 2025"
