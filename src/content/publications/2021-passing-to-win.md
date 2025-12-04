@@ -1,6 +1,6 @@
 ---
 title: "Passing to Win: Using Characteristics of Passing Information for Match Winner Prediction"
-authors: "Taihu Li, Jeewoo Yoon, Jinyoung Han*, and Daejin Choi*"
+authors: "Taihu Li, Jeewoo Yoon, Jinyoung Han*, and **Daejin Choi\***"
 year: 2021
 venueShort: "icSPORTS"
 venueFull: "International Congress on Sport Sciences Research and Technology Support (icSPORTS), September, 2021"

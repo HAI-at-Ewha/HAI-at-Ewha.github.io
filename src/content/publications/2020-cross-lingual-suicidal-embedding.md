@@ -1,6 +1,6 @@
 ---
 title: "Cross-Lingual Suicidal-Oriented Word Embedding toward Suicide Prevention"
-authors: "Daeun Lee, Soyoung Park, Jiwon Kang, Daejin Choi, and Jinyoung Han*"
+authors: "Daeun Lee, Soyoung Park, Jiwon Kang, **Daejin Choi**, and Jinyoung Han*"
 year: 2020
 venueShort: "EMNLP"
 venueFull: "EMNLP Findings, November 2020"
