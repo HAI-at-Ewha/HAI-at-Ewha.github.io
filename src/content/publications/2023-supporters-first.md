@@ -1,6 +1,6 @@
 ---
 title: "Supporters First: Understanding Online Social Support from a Supporter Perspective"
-authors: "Meeyun Kim, Koustuv Saha, Munmun De Choudhury, and Daejin Choi*"
+authors: "Meeyun Kim, Koustuv Saha, Munmun De Choudhury, and Daejin Choi†"
 year: 2023
 venueShort: "CSCW"
 venueFull: "ACM Conference on Computer-Supportive Cooperative Work and Social Computing (CSCW)"
