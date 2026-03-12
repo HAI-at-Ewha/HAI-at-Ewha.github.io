@@ -9,5 +9,6 @@ links:
   - label: "GitHub"
     url: "https://github.com/tr0up2r"
     icon: "github"
+note: "2021.09 - 2023.08 (Graduated@INU)"
 order: 51
 ---
