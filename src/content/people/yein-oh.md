@@ -9,5 +9,5 @@ links:
   - label: "GitHub"
     url: "https://github.com/yeinoh36"
     icon: "github"
-order: 10
+order: 52
 ---

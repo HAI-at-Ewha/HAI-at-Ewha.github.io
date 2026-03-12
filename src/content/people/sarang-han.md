@@ -1,6 +1,6 @@
 ---
 name: "Sarang Han"
-group: "undergrad-prospective"
+group: "master"
 email: "hangpfm0518@ewhain.net"
 profileImage: "/profile/sarang.png"
 researchAreas:
@@ -9,5 +9,5 @@ links:
   - label: "GitHub"
     url: "https://github.com/Sarang-Han"
     icon: "github"
-order: 30
+order: 54
 ---

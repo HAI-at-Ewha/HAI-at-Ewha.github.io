@@ -9,5 +9,5 @@ links:
   - label: "GitHub"
     url: "https://github.com/hwan9915"
     icon: "github"
-order: 20
+order: 53
 ---

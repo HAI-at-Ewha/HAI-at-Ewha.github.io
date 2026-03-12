@@ -5,5 +5,5 @@ email: "hyorin@ewha.ac.kr"
 profileImage: "/profile/hyorin.png"
 researchAreas:
   - "AI for elder people"
-order: 50
+order: 1001
 ---
