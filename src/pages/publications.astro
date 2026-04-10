@@ -272,8 +272,9 @@ const publications = Array.from(groupedMap.entries()).map(([year, papers]) => ({
     line-height: 1.6;
   }
 
-  .paper-authors strong {
+  .paper-authors :global(strong) {
     font-weight: 700 !important;
+    font-family: 'JetBrains Mono', 'Noto Sans KR', sans-serif !important;
   }
 
   .paper-venue {
