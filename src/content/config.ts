@@ -63,9 +63,24 @@ const publicationsCollection = defineCollection({
   }),
 });
 
+const galleryCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.date(),
+    description: z.string(),
+    cover: z.string(),
+    images: z.array(z.object({
+      src: z.string(),
+      alt: z.string()
+    })).optional(),
+  }),
+});
+
 export const collections = {
   news: newsCollection,
   people: peopleCollection,
   datasets: datasetCollection,
   publications: publicationsCollection,
+  gallery: galleryCollection,
 };
