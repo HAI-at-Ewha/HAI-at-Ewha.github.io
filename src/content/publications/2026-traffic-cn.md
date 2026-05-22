@@ -3,7 +3,7 @@ title: "Light-weight, Adaptable, and Transferable Predictor for Traffic Forecast
 authors: "**Daejin Choi**†, Seongjun Lee, Selin Chun, Taekyoung Kwon, and Jinyoung Han†"
 year: 2026
 venueShort: "ComNet"
-venueFull: "Elsevier Computer Networks"
+venueFull: "Elsevier Computer Networks, Vol. 285, 112384"
 type: "Journal"
-order: 11
+order: 49
 ---
