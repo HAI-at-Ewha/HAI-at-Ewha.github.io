@@ -5,5 +5,5 @@ year: 2026
 venueShort: "SIGIR"
 venueFull: "The 49th International ACM SIGIR Conference on Research and Development in Information Retrieval, 2026"
 type: "Conference"
-order: 48
+order: 3
 ---

@@ -5,5 +5,5 @@ year: 2026
 venueShort: "ICAIL"
 venueFull: "The 21st International Conference on Artificial Intelligence and Law, 2026"
 type: "Conference"
-order: 47
+order: 1
 ---
