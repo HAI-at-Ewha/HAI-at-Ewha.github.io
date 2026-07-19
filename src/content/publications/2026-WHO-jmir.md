@@ -3,7 +3,7 @@ title: "Large Language Models for World Health Organization - Uppsala Monitoring
 authors: "Young Mi Ha, Minjung Kim, YoungIn Bang, **Daejin Choi**, Jae Hyun Kim, Sandy Jeong Rhie, Yoshihiro Noguchi, Myeong Gyu Kim†"
 year: 2026
 venueShort: "JMIR"
-venueFull: "Journal of Medical Internet Research, Vol. 28, e93237"
+venueFull: "Journal of Medical Internet Research, Vol. 28, e93237 (SCIE, Top 10%)"
 type: "Journal"
 order: 6
 ---
