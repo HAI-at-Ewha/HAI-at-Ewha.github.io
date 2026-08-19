@@ -9,6 +9,7 @@ const sortedPeople = [...peopleEntries].sort((a, b) => a.data.order - b.data.ord
 
 type GroupedPeople = {
   pi: typeof sortedPeople;
+  postdoc: typeof sortedPeople;
   master: typeof sortedPeople;
   undergradProspective: typeof sortedPeople;
   researchIntern: typeof sortedPeople;
@@ -20,6 +21,9 @@ const grouped = sortedPeople.reduce<GroupedPeople>(
     switch (person.data.group) {
       case 'pi':
         acc.pi.push(person);
+        break;
+      case 'postdoc':
+        acc.postdoc.push(person);
         break;
       case 'master':
         acc.master.push(person);
@@ -39,6 +43,7 @@ const grouped = sortedPeople.reduce<GroupedPeople>(
   },
   {
     pi: [],
+    postdoc: [],
     master: [],
     undergradProspective: [],
     researchIntern: [],
@@ -135,6 +140,58 @@ const iconSvg: Record<string, string> = {
       )}
     </div>
   </section>
+
+  <!-- Post-doc Section -->
+  <section class="section students-section">
+    <div class="container">
+      <h2 class="section-title">Post-doc</h2>
+      {grouped.postdoc.length ? (
+        <div class="students-grid">
+          {grouped.postdoc.map((person) => (
+            <div class="student-card">
+              <div class="student-image">
+                {person.data.profileImage ? (
+                  <img src={person.data.profileImage} alt={person.data.name} loading="lazy" />
+                ) : (
+                  <div class="profile-placeholder profile-placeholder--small">
+                    {person.data.name.charAt(0)}
+                  </div>
+                )}
+              </div>
+              <div class="student-info">
+                <h3>
+                  {person.data.name}
+                  {person.data.note && <span class="student-note">({person.data.note})</span>}
+                </h3>
+                {person.data.email && (
+                  <p class="student-email clickable-email" data-email={person.data.email}>
+                    {person.data.email}
+                  </p>
+                )}
+                {person.data.researchAreas.length > 0 && (
+                  <p class="student-research-area">
+                    Research: {person.data.researchAreas.join(', ')}
+                  </p>
+                )}
+                {person.data.links.length > 0 && (
+                  <div class="student-links">
+                    {person.data.links.map((link) => (
+                      <a href={link.url} target="_blank" rel="noopener noreferrer" class="student-badge" title={link.label}>
+                        <span class="link-icon" aria-hidden="true" set:html={iconSvg[link.icon] ?? iconSvg.homepage}></span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="section-empty">You will be here!</p>
+      )}
+    </div>
+  </section>
+
 
   <!-- Graduate Students Section -->
   <section class="section students-section">
