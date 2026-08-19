@@ -13,7 +13,7 @@ const peopleCollection = defineCollection({
   type: 'content',
   schema: z.object({
     name: z.string(),
-    group: z.enum(['pi', 'master', 'undergrad-prospective', 'research-intern', 'alumni']),
+    group: z.enum(['pi', 'postdoc', 'master', 'undergrad-prospective', 'research-intern', 'alumni']),
     position: z.string().optional(),
     email: z.string().email().optional(),
     profileImage: z.string().optional(),
